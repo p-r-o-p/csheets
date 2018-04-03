@@ -1,0 +1,42 @@
+security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        in_memory:
+            memory:
+                users:
+                    testuser:
+                        password: $2y$12$xy7J57ixWhSclXhc/xVOgeomf4FZdY.U.ShXHbmGkn2G0stdSLtSS
+                        roles: 'ROLE_USER'
+    encoders:
+        Symfony\Component\Security\Core\User\User:
+            algorithm: bcrypt
+            cost: 12
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: ~
+
+            # activate different ways to authenticate
+
+            # http_basic: ~
+            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+
+            form_login:
+              login_path: login
+              check_path: login
+              csrf_token_generator: security.csrf.token_manager
+              default_target_path: csheet
+              always_use_default_target_path: true
+            # https://symfony.com/doc/current/security/form_login_setup.html
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        - { path: ^/ roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/signup roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/csheet, roles: ROLE_USER }
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }
